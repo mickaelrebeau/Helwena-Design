@@ -1,0 +1,210 @@
+/* Import de la police Glacial Indifference */
+@font-face {
+    font-family: 'Glacial Indifference';
+    src: url('fonts/glacial-indifference/GlacialIndifference-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Glacial Indifference';
+    src: url('fonts/glacial-indifference/GlacialIndifference-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Exan';
+    src: url('fonts/7245-fontps.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #FDFDFB;
+    font-family: 'Glacial Indifference', sans-serif;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Styles pour le header */
+.header {
+    padding: 1rem 2rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+
+    & .logo {
+        height: 20px;
+    }
+
+    & .nav {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+        gap: 2rem;
+    }
+}
+
+.menu {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    z-index: 1000;
+}
+
+.list {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    font-weight: normal;
+
+    & li {
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    & li:hover {
+        color: #666;
+    }
+}
+
+.cta-button {
+    background-color: #323328;
+    color: #CDCDCD;
+    border: none;
+    padding: 1rem 0.75rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Glacial Indifference', sans-serif;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #333;
+    }
+}
+
+.video { 
+    width: 59vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 10;
+}
+
+main {
+    padding: 0 1rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.content {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: end;
+}
+
+.content-text {
+    width: 50%;
+
+    & h1 {
+        font-size: 32px;
+        font-weight: 400;
+        color: #323328;
+        font-family: 'Exan', sans-serif;
+        margin-bottom: 20px;
+    }
+
+    & p {
+        font-size: 24px;
+        color: rgba(0, 0, 0, 0.5);
+        font-weight: 400;
+        font-family: 'Glacial Indifference', sans-serif;
+        margin-bottom: 20px;
+    }
+}
+
+.buttons-container {
+    display: flex;
+    gap: 50px;
+}
+
+.cta-2-button {
+    background-color: #323328;
+    color: #CDCDCD;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Glacial Indifference', sans-serif;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: rgba(50, 51, 40, 0.8);
+    }
+
+    & div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        & p {
+            margin: 0;
+            color: #CDCDCD;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'Glacial Indifference', sans-serif;
+        }
+    }
+}
+
+.learn-more-button {
+    background-color: transparent;
+    color: #323328;
+    border: 1px solid #323328;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Glacial Indifference', sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #323328;
+        color: #CDCDCD;
+    }
+}
+
+.poumons-container {
+    position: relative;
+
+    & .poumons {
+        width: 129px;
+        height: 131px;
+        position: absolute;
+        bottom: 110px;
+        left: 70px;
+    }
+}
