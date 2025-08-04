@@ -181,6 +181,8 @@ onMounted(() => {
   // Animation de l'icône de rotation
   tl.from('.rotate', {
     duration: 0.8,
+    y: 50,
+    x: -100,
     rotation: 0,
     opacity: 0,
     ease: 'power2.out'
@@ -544,7 +546,7 @@ section {
   position: absolute;
   top: 50%;
   left: 30%;
-  transform: translate(-50%, -20%);
+  transform: translate(-20%, -30%);
   transition: transform 0.5s ease;
   transform-origin: center;
 }
