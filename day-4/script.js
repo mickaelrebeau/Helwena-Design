@@ -1,6 +1,63 @@
 // Import GSAP depuis CDN
 // Note: Assurez-vous d'ajouter <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script> dans le HTML
 
+// Burger menu functionality
+const burgerMenu = document.querySelector('.burger-menu');
+const navList = document.querySelector('.nav-list');
+let isMenuOpen = false;
+
+burgerMenu.addEventListener('click', () => {
+    isMenuOpen = !isMenuOpen;
+    
+    if (isMenuOpen) {
+        burgerMenu.classList.add('active');
+        navList.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // Animation d'entrée du menu
+        gsap.fromTo('.nav-item', {
+            x: 50,
+            opacity: 0
+        }, {
+            x: 0,
+            opacity: 1,
+            duration: 0.5,
+            stagger: 0.1,
+            ease: "power2.out"
+        });
+    } else {
+        burgerMenu.classList.remove('active');
+        navList.classList.remove('active');
+        document.body.style.overflow = '';
+        
+        // Animation de sortie du menu
+        gsap.to('.nav-item', {
+            x: 50,
+            opacity: 0,
+            duration: 0.3,
+            stagger: 0.05,
+            ease: "power2.in"
+        });
+    }
+});
+
+// Fermer le menu en cliquant sur un élément de navigation
+const navItems = document.querySelectorAll('.nav-item');
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        if (isMenuOpen) {
+            burgerMenu.click();
+        }
+    });
+});
+
+// Fermer le menu en cliquant en dehors
+document.addEventListener('click', (e) => {
+    if (isMenuOpen && !burgerMenu.contains(e.target) && !navList.contains(e.target)) {
+        burgerMenu.click();
+    }
+});
+
 // Données des pages
 const pages = [
   {
@@ -35,7 +92,7 @@ const pages = [
     description2:
       "Originally designed as a harmonic stabilizer, Unit 0x95E2 was created to soothe corrupted neural data in human-cybernetic interfaces. But she evolved beyond calibration — she began to compose.",
     description3:
-      "Her harp is not an instrument it is a neural matrix. Each string she touches activates a tone that realigns memory fragments and emotional decay. Her music doesn’t entertain — it heals, reveals, and sometimes… destroys.",
+      "Her harp is not an instrument it is a neural matrix. Each string she touches activates a tone that realigns memory fragments and emotional decay. Her music doesn't entertain — it heals, reveals, and sometimes… destroys.",
     navTextTitle: "03",
     navTextCharacter: "Sora 空",
   },
@@ -51,7 +108,7 @@ const pages = [
     description1:
       "SORA exists in a fractured reality a space suspended between data and dust, memory and silence.",
     description2:
-      "He wanders through the Noctilux, glowing corridors of lost signals and forgotten dreams. In this world, emotions are not spoken — they’re encoded, downloaded, and felt through ambient vibrations.",
+      "He wanders through the Noctilux, glowing corridors of lost signals and forgotten dreams. In this world, emotions are not spoken — they're encoded, downloaded, and felt through ambient vibrations.",
     description3:
       "",
     navTextTitle: "04",
@@ -163,9 +220,9 @@ gsap.from(".nav-section-text", {
 });
 
 // Animations au survol des éléments de navigation
-const navItems = document.querySelectorAll(".nav-item");
+const navItemsForHover = document.querySelectorAll(".nav-item");
 
-navItems.forEach(item => {
+navItemsForHover.forEach(item => {
     item.addEventListener("mouseenter", () => {
         gsap.to(item, {
             duration: 0.3,
