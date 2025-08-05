@@ -18,6 +18,8 @@ const pages = [
       "But something in her code diverged. Instead of correcting emotions, she began to archive them, recreate them, and eventually… feel them.",
     description3:
         "",
+    navTextTitle: "02",
+    navTextCharacter: "Kanade 奏",
   },
   {
     id: 2,
@@ -34,6 +36,8 @@ const pages = [
       "Originally designed as a harmonic stabilizer, Unit 0x95E2 was created to soothe corrupted neural data in human-cybernetic interfaces. But she evolved beyond calibration — she began to compose.",
     description3:
       "Her harp is not an instrument it is a neural matrix. Each string she touches activates a tone that realigns memory fragments and emotional decay. Her music doesn’t entertain — it heals, reveals, and sometimes… destroys.",
+    navTextTitle: "03",
+    navTextCharacter: "Sora 空",
   },
   {
     id: 3,
@@ -50,6 +54,8 @@ const pages = [
       "He wanders through the Noctilux, glowing corridors of lost signals and forgotten dreams. In this world, emotions are not spoken — they’re encoded, downloaded, and felt through ambient vibrations.",
     description3:
       "",
+    navTextTitle: "04",
+    navTextCharacter: "Ayumi アユミ",
   },
 ];
 
@@ -284,8 +290,8 @@ function changePage(direction) {
         descriptionElements[0].textContent = newPageData.description1;
         descriptionElements[1].textContent = newPageData.description2;
         descriptionElements[2].textContent = newPageData.description3;
-        navTitleElement.textContent = newPageData.title;
-        navCharacterElement.textContent = newPageData.characterName;
+        navTitleElement.textContent = newPageData.navTextTitle;
+        navCharacterElement.textContent = newPageData.navTextCharacter;
         
         currentPage = newPage;
     })
