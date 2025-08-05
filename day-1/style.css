@@ -31,6 +31,7 @@ body {
     font-family: 'Glacial Indifference', sans-serif;
     max-width: 1400px;
     margin: 0 auto;
+    overflow: hidden;
 }
 
 /* Styles pour le header */
@@ -50,10 +51,43 @@ body {
         width: 100%;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         max-width: 1400px;
         margin: 0 auto;
         gap: 2rem;
     }
+}
+
+/* Burger menu */
+.burger-menu {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    z-index: 1001;
+    width: 30px;
+    height: 25px;
+    position: relative;
+}
+
+.burger-menu span {
+    width: 100%;
+    height: 3px;
+    background-color: #323328;
+    margin: 3px 0;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.burger-menu.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.burger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.burger-menu.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
 }
 
 .menu {
@@ -104,6 +138,23 @@ body {
     top: 0;
     right: 0;
     z-index: 10;
+    object-fit: cover;
+    opacity: 1;
+    filter: blur(0);
+}
+
+.video-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: -999;
+    pointer-events: none;
+    display: none;
+    opacity: 0;
+    visibility: hidden;
 }
 
 main {
@@ -122,10 +173,13 @@ main {
     flex-direction: column;
     align-items: start;
     justify-content: end;
+    position: relative;
+    z-index: 20;
 }
 
 .content-text {
-    width: 50%;
+    width: 38%;
+    max-width: 600px;
 
     & h1 {
         font-size: 32px;
@@ -133,6 +187,7 @@ main {
         color: #323328;
         font-family: 'Exan', sans-serif;
         margin-bottom: 20px;
+        line-height: 1.2;
     }
 
     & p {
@@ -141,12 +196,14 @@ main {
         font-weight: 400;
         font-family: 'Glacial Indifference', sans-serif;
         margin-bottom: 20px;
+        line-height: 1.4;
     }
 }
 
 .buttons-container {
     display: flex;
     gap: 50px;
+    flex-wrap: wrap;
 }
 
 .cta-2-button {
@@ -206,5 +263,248 @@ main {
         position: absolute;
         bottom: 110px;
         left: 70px;
+    }
+}
+
+/* Media Queries pour la responsivité */
+
+/* Tablettes */
+@media (max-width: 1024px) {
+    .content-text {
+        width: 60%;
+        
+        & h1 {
+            font-size: 28px;
+        }
+        
+        & p {
+            font-size: 20px;
+        }
+    }
+    
+    .video {
+        width: 50vw;
+    }
+    
+    .poumons-container .poumons {
+        width: 129px;
+        height: 131px;
+        bottom: 80px;
+        left: 60px;
+    }
+}
+
+/* Tablettes en mode portrait */
+@media (max-width: 768px) {
+    .header {
+        padding: 1rem;
+    }
+    
+    .burger-menu {
+        display: flex;
+    }
+    
+    .menu {
+        padding: 10px 30px;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(253, 253, 251, 0.98);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: right 0.3s ease;
+        gap: 3rem;
+    }
+    
+    .menu.active {
+        right: 0;
+    }
+    
+    .list {
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+        
+        & li {
+            font-size: 24px;
+        }
+    }
+    
+    .cta-button {
+        width: 100%;
+        font-size: 18px;
+        padding: 1rem 2rem;
+    }
+    
+    .content-text {
+        width: 80%;
+        
+        & h1 {
+            font-size: 24px;
+        }
+        
+        & p {
+            font-size: 18px;
+        }
+    }
+    
+    .buttons-container {
+        gap: 20px;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .cta-2-button, .learn-more-button {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    .video {
+        width: 100vw;
+        opacity: 0.3;
+        filter: blur(8px);
+    }
+    
+    /* Overlay blanc pour améliorer la lisibilité */
+    .video-overlay {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .poumons-container .poumons {
+        width: 129px;
+        height: 131px;
+        bottom: 80px;
+        left: 60px;
+    }
+}
+
+/* Mobiles */
+@media (max-width: 480px) {
+    .header {
+        padding: 0.5rem 1rem;
+    }
+    
+    .logo {
+        height: 16px;
+    }
+    
+    .content-text {
+        width: 90%;
+        
+        & h1 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        
+        & p {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+    }
+    
+    .buttons-container {
+        gap: 15px;
+    }
+    
+    .cta-2-button div p,
+    .learn-more-button {
+        font-size: 16px;
+    }
+    
+    .poumons-container .poumons {
+        width: 129px;
+        height: 131px;
+        bottom: 80px;
+        left: 60px;
+    }
+
+    .menu .list li {
+        font-size: 20px;
+    }
+    
+    .cta-button {
+        font-size: 16px;
+        padding: 0.8rem 1.5rem;
+    }
+    
+    .video-overlay {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* Très petits écrans */
+@media (max-width: 320px) {
+    .content-text {
+        width: 95%;
+        
+        & h1 {
+            font-size: 18px;
+        }
+        
+        & p {
+            font-size: 14px;
+        }
+    }
+    
+    .poumons-container .poumons {
+        width: 129px;
+        height: 131px;
+        bottom: 80px;
+        left: 60px;
+    }
+    
+    .video-overlay {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* Orientation paysage sur mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .content {
+        justify-content: center;
+        padding-top: 80px;
+    }
+    
+    .content-text {
+        width: 70%;
+        
+        & h1 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        & p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    }
+    
+    .buttons-container {
+        gap: 15px;
+    }
+    
+    .poumons-container .poumons {
+        width: 50px;
+        height: 52px;
+        bottom: 20px;
+        left: 20px;
+    }
+    
+    .video-overlay {
+        display: block;
+        opacity: 1;
+        visibility: visible;
     }
 }

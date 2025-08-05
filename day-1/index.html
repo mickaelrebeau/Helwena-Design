@@ -12,7 +12,12 @@
     <header class="header">
         <nav class="nav">
             <img src="images/logo.svg" alt="Logo" class="logo">
-            <nav class="menu">
+            <div class="burger-menu" id="burger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav class="menu" id="menu">
                 <ul class="list">
                     <li>Home</li>
                     <li>About</li>
@@ -47,7 +52,25 @@
         </div>
     </main>
     <video class="video" src="videos/video.mp4" autoplay muted loop></video>
+    <div class="video-overlay"></div>
 <script>
+    // Gestion du burger menu
+    const burgerMenu = document.getElementById('burger-menu');
+    const menu = document.getElementById('menu');
+
+    burgerMenu.addEventListener('click', () => {
+        burgerMenu.classList.toggle('active');
+        menu.classList.toggle('active');
+    });
+
+    // Fermer le menu en cliquant sur un lien
+    document.querySelectorAll('.menu .list li').forEach(link => {
+        link.addEventListener('click', () => {
+            burgerMenu.classList.remove('active');
+            menu.classList.remove('active');
+        });
+    });
+
     // Animation d'entrée pour le header
     gsap.from('.header', {
         duration: 1,
