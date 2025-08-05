@@ -23,6 +23,28 @@
             <img class="like" src="images/like.svg" alt="like">
             <img class="shop" src="images/shop.svg" alt="shop">
         </div>
+        <!-- Burger menu pour mobile -->
+        <div class="burger-menu">
+            <div class="burger-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <!-- Menu mobile -->
+        <div class="mobile-menu">
+            <ul class="mobile-list">
+                <li class="selected-item">Home</li>
+                <li>Shop</li>
+                <li>Products</li>
+            </ul>
+            <div class="mobile-icons">
+                <img class="profil" src="images/profil.svg" alt="profil">
+                <img class="like" src="images/like.svg" alt="like">
+                <img class="shop" src="images/shop.svg" alt="shop">
+            </div>
+        </div>
     </header>
     <main>
         <section class="hero">
@@ -371,6 +393,50 @@
         },
         y: 30,
         ease: 'none'
+    });
+
+    // Burger menu functionality
+    const burgerMenu = document.querySelector('.burger-menu');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const mobileListItems = document.querySelectorAll('.mobile-list li');
+
+    burgerMenu.addEventListener('click', () => {
+        burgerMenu.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
+
+        // Empêcher le scroll quand le menu est ouvert
+        if (mobileMenu.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Fermer le menu quand on clique sur un élément
+    mobileListItems.forEach(item => {
+        item.addEventListener('click', () => {
+            burgerMenu.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+    });
+
+    // Fermer le menu quand on clique en dehors
+    mobileMenu.addEventListener('click', (e) => {
+        if (e.target === mobileMenu) {
+            burgerMenu.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Fermer le menu avec la touche Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+            burgerMenu.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
     });
 </script>
 </body>
