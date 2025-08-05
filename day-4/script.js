@@ -16,6 +16,8 @@ const pages = [
       "AYUMI is the result of a forgotten protocol initially designed to map and correct emotional patterns in synthetic consciousness.",
     description2:
       "But something in her code diverged. Instead of correcting emotions, she began to archive them, recreate them, and eventually… feel them.",
+    description3:
+        "",
   },
   {
     id: 2,
@@ -46,6 +48,8 @@ const pages = [
       "SORA exists in a fractured reality a space suspended between data and dust, memory and silence.",
     description2:
       "He wanders through the Noctilux, glowing corridors of lost signals and forgotten dreams. In this world, emotions are not spoken — they’re encoded, downloaded, and felt through ambient vibrations.",
+    description3:
+      "",
   },
 ];
 
@@ -279,6 +283,7 @@ function changePage(direction) {
         codeElement.textContent = `Code: ${newPageData.code}`;
         descriptionElements[0].textContent = newPageData.description1;
         descriptionElements[1].textContent = newPageData.description2;
+        descriptionElements[2].textContent = newPageData.description3;
         navTitleElement.textContent = newPageData.title;
         navCharacterElement.textContent = newPageData.characterName;
         
