@@ -1,0 +1,409 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  height: 100vh;
+  width: 100%;
+  background-image: url(images/bg.jpg);
+  background-size: cover;
+  background-position: top;
+}
+
+main {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+section {
+  width: 420px;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(2px);
+  padding: 40px 40px;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Effet Liquid Glass */
+section::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  animation: liquidMove 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  animation: liquidShine 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes liquidMove {
+  0%,
+  100% {
+    transform: translate(-30%, -30%) rotate(0deg);
+  }
+  25% {
+    transform: translate(-20%, -40%) rotate(90deg);
+  }
+  50% {
+    transform: translate(-40%, -20%) rotate(180deg);
+  }
+  75% {
+    transform: translate(-30%, -30%) rotate(270deg);
+  }
+}
+
+@keyframes liquidShine {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+}
+
+/* Assurer que le contenu reste au-dessus de l'effet liquid */
+.form,
+.form-footer {
+  position: relative;
+  z-index: 3;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+label {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+input {
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+input::placeholder {
+  font-size: 14px;
+  font-weight: 400;
+  padding: 10px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.forgot-password {
+  font-size: 12px;
+  font-weight: 400;
+  text-align: right;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.connect-button {
+  padding: 10px;
+  background-color: #1970f5;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.form-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 40px;
+}
+
+.form-footer-text {
+  font-size: 16px;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.form-footer-text::before {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 10px;
+  position: absolute;
+  top: 50%;
+  left: 0;
+}
+
+.form-footer-text::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 10px;
+  position: absolute;
+  top: 50%;
+  right: 0;
+}
+
+.social-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 40px;
+}
+
+.social-button-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.sign-up-text {
+  font-size: 14px;
+  font-weight: 300;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.sign-up-text a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.sign-up-text a:hover {
+  text-decoration: underline;
+}
+
+/* les boutons de connexion social */
+
+@property --angle-1 {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: -75deg;
+}
+
+@property --angle-2 {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: -45deg;
+}
+
+.button-wrap {
+  background: transparent;
+
+  position: relative;
+  z-index: 2;
+
+  border-radius: 2rem;
+  pointer-events: none;
+
+  transition: all 400ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.button-shadow {
+  width: 44px;
+  height: 44px;
+
+  position: absolute;
+  top: -1.1em;
+  left: -1em;
+
+  filter: blur(1px);
+  overflow: visible;
+  pointer-events: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+
+    border-radius: 2rem;
+
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
+
+    width: 44px;
+    height: 44px;
+
+    top: 1.5em;
+    left: 1em;
+
+    padding: 0.1em;
+
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    overflow: visible;
+    opacity: 1;
+
+    transition: all 400ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+}
+
+.social-button {
+  padding: 10px;
+  cursor: pointer;
+  position: relative;
+  pointer-events: auto;
+  z-index: 3;
+  background: linear-gradient(
+    -75deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.05)
+  );
+  border: none;
+  border-radius: 2rem;
+  box-shadow: inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+    inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5),
+    0 0.25em 0.125em -0.125em rgba(0, 0, 0, 0.2),
+    0 0 0.1em 0.25em inset rgba(255, 255, 255, 0.2),
+    0 0 0 0 rgba(255, 255, 255, 1);
+  backdrop-filter: blur(1px);
+  transition: all 400ms cubic-bezier(0.25, 1, 0.5, 1);
+
+  &:hover {
+    transform: scale(0.98);
+    backdrop-filter: blur(1px);
+    box-shadow: inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+      inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5),
+      0 0.15em 0.05em -0.1em rgba(0, 0, 0, 0.25),
+      0 0 0.05em 0.1em inset rgba(255, 255, 255, 0.5),
+      0 0 0 0 rgba(255, 255, 255, 1);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    border-radius: 2rem;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    padding: 1px;
+    box-sizing: border-box;
+    background: conic-gradient(
+        from var(--angle-1) at 50% 50%,
+        rgba(0, 0, 0, 0.5),
+        rgba(0, 0, 0, 0) 5% 40%,
+        rgba(0, 0, 0, 0.5) 50%,
+        rgba(0, 0, 0, 0) 60% 95%,
+        rgba(0, 0, 0, 0.5)
+      ),
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.5),
+        rgba(255, 255, 255, 0.5)
+      );
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    box-shadow: inset 0 0 0 calc(1px / 2) rgba(255, 255, 255, 0.5);
+    transition: all 400ms cubic-bezier(0.25, 1, 0.5, 1), --angle-1 500ms ease;
+  }
+}
+
+.social-button:hover::after {
+  --angle-1: -125deg;
+}
+
+.button-wrap:has(.social-button:hover) .button-shadow {
+  filter: blur(1px);
+  transition: filter 400ms cubic-bezier(0.25, 1, 0.5, 1);
+
+  &::after {
+    top: 1.2em;
+    opacity: 1;
+  }
+}
+
+.button-wrap:has(button:active) {
+  transform: rotate3d(1, 0, 0, 25deg);
+
+  & span {
+    text-shadow: 0.02em 0.2em 0.05em rgba(0, 0, 0, 0.2);
+  }
+
+  & button {
+    box-shadow: inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+      inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5),
+      0 0.125em 0.125em -0.125em rgba(0, 0, 0, 0.2),
+      0 0 0.1em 0.25em inset rgba(255, 255, 255, 0.2),
+      0 0.225em 0.05em 0 rgba(0, 0, 0, 0.05),
+      0 0.25em 0 0 rgba(255, 255, 255, 0.75),
+      inset 0 0.25em 0.05em 0 rgba(0, 0, 0, 0.15);
+  }
+
+  & .button-shadow {
+    filter: blur(1px);
+
+    &::after {
+      top: 1.5em;
+      opacity: 0.75;
+    }
+  }
+}
