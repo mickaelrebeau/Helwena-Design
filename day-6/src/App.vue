@@ -22,7 +22,7 @@ const cards = ref<Card[]>([
     price: 850,
     surface: 75,
     description: "Cozy eco-home with a green roof, surrounded by open fields. ",
-    image: "/src/assets/card-1.jpg"
+    image: "/src/assets/card-1.webp"
   },
   {
     id: 2,
@@ -30,7 +30,7 @@ const cards = ref<Card[]>([
     price: 1200,
     surface: 100,
     description: "Modern 3-bedroom apartment with a private garden and a pool.",
-    image: "/src/assets/card-2.jpg"
+    image: "/src/assets/card-2.webp"
   },
   {
     id: 3,
@@ -38,7 +38,7 @@ const cards = ref<Card[]>([
     price: 1500,
     surface: 120,
     description: "Luxurious 4-bedroom villa with a private beachfront.",
-    image: "/src/assets/card-3.jpg"
+    image: "/src/assets/card-3.webp"
   }
 ])
 
