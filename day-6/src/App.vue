@@ -5,6 +5,9 @@ import { EffectCards } from 'swiper/modules'
 import { gsap } from 'gsap'
 import 'swiper/css'
 import 'swiper/css/effect-cards'
+import card1Image from './assets/card-1.webp'
+import card2Image from './assets/card-2.webp'
+import card3Image from './assets/card-3.webp'
 
 interface Card {
   id: number
@@ -21,8 +24,8 @@ const cards = ref<Card[]>([
     name: "Vinland",
     price: 850,
     surface: 75,
-    description: "Cozy eco-home with a green roof, surrounded by open fields. ",
-    image: "/src/assets/card-1.webp"
+    description: "Cozy eco-home with a green roof, surrounded by open fields. ",
+    image: card1Image
   },
   {
     id: 2,
@@ -30,7 +33,7 @@ const cards = ref<Card[]>([
     price: 1200,
     surface: 100,
     description: "Modern 3-bedroom apartment with a private garden and a pool.",
-    image: "/src/assets/card-2.webp"
+    image: card2Image
   },
   {
     id: 3,
@@ -38,7 +41,7 @@ const cards = ref<Card[]>([
     price: 1500,
     surface: 120,
     description: "Luxurious 4-bedroom villa with a private beachfront.",
-    image: "/src/assets/card-3.webp"
+    image: card3Image
   }
 ])
 
