@@ -50,11 +50,15 @@ class MusicPlayer {
         this.startY = 0;
         this.startRotation = 0;
         
+        this.particleSystem = new ParticleSystem();
+        
         this.initializeElements();
         this.setupEventListeners();
         this.updateTimeDisplay();
         this.initializeAnimations();
         this.updateTrackTitle();
+        
+        this.particleSystem.setAudioElement(this.audio);
     }
 
     initializeElements() {
@@ -154,6 +158,37 @@ class MusicPlayer {
         this.createScreenReflection(main);
         
         this.setupVibrationEffect();
+        
+        this.createPhoneScreenEffect();
+    }
+
+    createPhoneScreenEffect() {
+        const screen = document.querySelector('.screen');
+        
+        gsap.set(screen, {
+            opacity: 0,
+            scale: 0.98,
+            rotationX: -2,
+            "--reflection-opacity": 0,
+            "--screen-brightness": 0.8
+        });
+        
+        gsap.to(screen, {
+            opacity: 1,
+            scale: 1,
+            rotationX: 0,
+            "--reflection-opacity": 0.05,
+            "--screen-brightness": 1,
+            duration: 2,
+            ease: "power2.out",
+            delay: 0.8
+        });
+        
+        this.addScreenPressureEffect(screen);
+        
+        this.addScreenParallaxEffect(screen);
+        
+        this.addScreenAudioReactivity(screen);
     }
 
     createScreenGlow(main) {
@@ -510,6 +545,11 @@ class MusicPlayer {
 
     togglePlay() {
         console.log('Toggle play appelé, isPlaying:', this.isPlaying);
+        
+        if (this.particleSystem) {
+            this.particleSystem.triggerInteractionEffect();
+        }
+        
         if (this.isPlaying) {
             this.pause();
         } else {
@@ -578,6 +618,10 @@ class MusicPlayer {
             }
         });
         
+        if (this.particleSystem) {
+            this.particleSystem.triggerInteractionEffect();
+        }
+        
         this.currentTrackIndex = this.getNextTrackIndex();
         this.loadTrack();
     }
@@ -595,6 +639,10 @@ class MusicPlayer {
                 });
             }
         });
+        
+        if (this.particleSystem) {
+            this.particleSystem.triggerInteractionEffect();
+        }
         
         this.currentTrackIndex = (this.currentTrackIndex - 1 + this.playlist.length) % this.playlist.length;
         this.loadTrack();
@@ -626,6 +674,10 @@ class MusicPlayer {
             }
         });
         
+        if (this.particleSystem) {
+            this.particleSystem.triggerInteractionEffect();
+        }
+        
         gsap.to(this.repeatButton, {
             opacity: this.isRepeated ? 1 : 0.5,
             duration: 0.3,
@@ -650,6 +702,10 @@ class MusicPlayer {
                 });
             }
         });
+        
+        if (this.particleSystem) {
+            this.particleSystem.triggerInteractionEffect();
+        }
         
         gsap.to(this.shuffleButton, {
             opacity: this.isShuffled ? 1 : 0.5,
@@ -752,6 +808,355 @@ class MusicPlayer {
     updateTrackTitle() {
         if (this.trackTitle) {
             this.trackTitle.textContent = this.playlist[this.currentTrackIndex].title;
+        }
+    }
+
+    addScreenPressureEffect(screen) {
+        const originalTogglePlay = this.togglePlay.bind(this);
+        this.togglePlay = function() {
+            gsap.to(screen, {
+                scale: 0.995,
+                duration: 0.3,
+                ease: "power2.out",
+                onComplete: () => {
+                    gsap.to(screen, {
+                        scale: 1,
+                        duration: 0.4,
+                        ease: "back.out(1.7)"
+                    });
+                }
+            });
+            originalTogglePlay();
+        };
+        
+        const buttons = [this.nextButton, this.previousButton, this.repeatButton, this.shuffleButton];
+        buttons.forEach(button => {
+            if (button) {
+                const originalClick = button.onclick;
+                button.addEventListener('click', () => {
+                    gsap.to(screen, {
+                        scale: 0.998,
+                        duration: 0.2,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            gsap.to(screen, {
+                                scale: 1,
+                                duration: 0.3,
+                                ease: "back.out(1.7)"
+                            });
+                        }
+                    });
+                });
+            }
+        });
+        
+        this.progressBar.addEventListener('click', () => {
+            gsap.to(screen, {
+                scale: 0.995,
+                duration: 0.3,
+                ease: "power2.out",
+                onComplete: () => {
+                    gsap.to(screen, {
+                        scale: 1,
+                        duration: 0.4,
+                        ease: "back.out(1.7)"
+                    });
+                }
+            });
+        });
+    }
+
+    addScreenParallaxEffect(screen) {
+        document.addEventListener('mousemove', (e) => {
+            const rect = screen.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const mouseX = e.clientX - centerX;
+            const mouseY = e.clientY - centerY;
+            
+            const maxTilt = 1;
+            const maxMove = 1.5;
+            
+            const tiltX = (mouseY / (window.innerHeight / 2)) * maxTilt;
+            const tiltY = -(mouseX / (window.innerWidth / 2)) * maxTilt;
+            const moveX = (mouseX / (window.innerWidth / 2)) * maxMove;
+            const moveY = (mouseY / (window.innerHeight / 2)) * maxMove;
+            
+            if (!this.isDragging) {
+                gsap.to(screen, {
+                    rotationX: tiltX,
+                    rotationY: tiltY,
+                    x: moveX,
+                    y: moveY,
+                    duration: 1.2,
+                    ease: "power2.out"
+                });
+            }
+        });
+        
+        document.addEventListener('mouseleave', () => {
+            gsap.to(screen, {
+                rotationX: 0,
+                rotationY: 0,
+                x: 0,
+                y: 0,
+                duration: 1.5,
+                ease: "power2.out"
+            });
+        });
+    }
+
+    addScreenAudioReactivity(screen) {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaElementSource(this.audio);
+        
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        
+        const updateScreenReactivity = () => {
+            if (this.isPlaying) {
+                analyser.getByteFrequencyData(dataArray);
+                
+                const average = dataArray.reduce((a, b) => a + b) / bufferLength;
+                const intensity = average / 255;
+                
+                gsap.to(screen, {
+                    "--screen-brightness": 1 + (intensity * 0.1),
+                    "--reflection-opacity": 0.05 + (intensity * 0.05),
+                    duration: 0.2,
+                    ease: "power2.out"
+                });
+            }
+            
+            requestAnimationFrame(updateScreenReactivity);
+        };
+        
+        updateScreenReactivity();
+    }
+}
+
+class ParticleSystem {
+    constructor() {
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
+        this.particles = null;
+        this.audioAnalyser = null;
+        this.audioContext = null;
+        this.dataArray = null;
+        this.isInitialized = false;
+        
+        this.init();
+    }
+
+    init() {
+        const canvas = document.getElementById('particlesCanvas');
+        
+        this.scene = new THREE.Scene();
+        
+        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.camera.position.z = 5;
+        
+        this.renderer = new THREE.WebGLRenderer({ 
+            canvas: canvas,
+            alpha: true,
+            antialias: true 
+        });
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setClearColor(0x000000, 0);
+        
+        this.createParticles();
+        
+        window.addEventListener('resize', () => this.onWindowResize());
+        
+        this.isInitialized = true;
+        this.animate();
+    }
+
+    createParticles() {
+        const particleCount = 300;
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        const sizes = new Float32Array(particleCount);
+        const velocities = new Float32Array(particleCount * 3);
+        
+        const geometry = new THREE.BufferGeometry();
+        
+        const colorPalette = [
+            new THREE.Color(0xF4D1AB), 
+            new THREE.Color(0xD9AB73), 
+            new THREE.Color(0x8C4303), 
+            new THREE.Color(0xDCC04F), 
+            new THREE.Color(0xFFFFFF)  
+        ];
+        
+        for (let i = 0; i < particleCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 15;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 15;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 15;
+            
+            velocities[i * 3] = (Math.random() - 0.5) * 0.02;
+            velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
+            velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
+            
+            const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+            colors[i * 3] = color.r;
+            colors[i * 3 + 1] = color.g;
+            colors[i * 3 + 2] = color.b;
+            
+            sizes[i] = Math.random() * 0.08 + 0.03;
+        }
+        
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+        geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+        
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                time: { value: 0 },
+                audioIntensity: { value: 0 },
+                interactionIntensity: { value: 0 }
+            },
+            vertexShader: `
+                attribute float size;
+                attribute vec3 color;
+                attribute vec3 velocity;
+                varying vec3 vColor;
+                uniform float time;
+                uniform float audioIntensity;
+                uniform float interactionIntensity;
+                
+                void main() {
+                    vColor = color;
+                    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                    
+                    float wave = sin(time * 2.0 + position.x * 0.5) * audioIntensity * 0.3;
+                    float interaction = sin(time * 5.0 + position.y * 0.3) * interactionIntensity * 0.5;
+                    
+                    mvPosition.xyz += vec3(wave + interaction, wave * 0.5 + interaction * 0.3, 0.0);
+                    
+                    float dynamicSize = size * (300.0 / -mvPosition.z) * (1.0 + audioIntensity * 1.5 + interactionIntensity * 0.5);
+                    gl_PointSize = dynamicSize;
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `,
+            fragmentShader: `
+                varying vec3 vColor;
+                
+                void main() {
+                    float distance = length(gl_PointCoord - vec2(0.5));
+                    if (distance > 0.5) discard;
+                    
+                    float alpha = 1.0 - distance * 2.0;
+                    gl_FragColor = vec4(vColor, alpha * 0.6);
+                }
+            `,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+        
+        this.particles = new THREE.Points(geometry, material);
+        this.scene.add(this.particles);
+        
+        this.velocities = velocities;
+    }
+
+    setupAudioAnalyser(audioElement) {
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        this.audioAnalyser = this.audioContext.createAnalyser();
+        const source = this.audioContext.createMediaElementSource(audioElement);
+        
+        source.connect(this.audioAnalyser);
+        this.audioAnalyser.connect(this.audioContext.destination);
+        
+        this.audioAnalyser.fftSize = 256;
+        this.dataArray = new Uint8Array(this.audioAnalyser.frequencyBinCount);
+    }
+
+    updateAudioIntensity() {
+        if (this.audioAnalyser && this.dataArray) {
+            this.audioAnalyser.getByteFrequencyData(this.dataArray);
+            
+            const average = this.dataArray.reduce((a, b) => a + b) / this.dataArray.length;
+            const intensity = average / 255;
+            
+            if (this.particles && this.particles.material) {
+                this.particles.material.uniforms.audioIntensity.value = intensity;
+            }
+        }
+    }
+
+    triggerInteractionEffect() {
+        if (this.particles && this.particles.material) {
+            gsap.to(this.particles.material.uniforms.interactionIntensity, {
+                value: 1,
+                duration: 0.3,
+                ease: "power2.out",
+                onComplete: () => {
+                    gsap.to(this.particles.material.uniforms.interactionIntensity, {
+                        value: 0,
+                        duration: 0.5,
+                        ease: "power2.out"
+                    });
+                }
+            });
+        }
+    }
+
+    animate() {
+        requestAnimationFrame(() => this.animate());
+        
+        if (!this.isInitialized) return;
+        
+        const time = Date.now() * 0.001;
+        
+        if (this.particles && this.particles.material) {
+            this.particles.material.uniforms.time.value = time;
+        }
+        
+        if (this.particles && this.velocities) {
+            const positions = this.particles.geometry.attributes.position.array;
+            
+            for (let i = 0; i < positions.length; i += 3) {
+                positions[i] += this.velocities[i] * 2;
+                positions[i + 1] += this.velocities[i + 1] * 2;
+                positions[i + 2] += this.velocities[i + 2] * 2;
+                
+                if (Math.abs(positions[i]) > 7.5) this.velocities[i] *= -1;
+                if (Math.abs(positions[i + 1]) > 7.5) this.velocities[i + 1] *= -1;
+                if (Math.abs(positions[i + 2]) > 7.5) this.velocities[i + 2] *= -1;
+            }
+            
+            this.particles.geometry.attributes.position.needsUpdate = true;
+        }
+        
+        if (this.particles) {
+            this.particles.rotation.x = time * 0.05;
+            this.particles.rotation.y = time * 0.08;
+        }
+        
+        this.updateAudioIntensity();
+        
+        this.renderer.render(this.scene, this.camera);
+    }
+
+    onWindowResize() {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    setAudioElement(audioElement) {
+        if (audioElement && !this.audioContext) {
+            this.setupAudioAnalyser(audioElement);
         }
     }
 }
