@@ -1,6 +1,46 @@
 class MusicPlayer {
     constructor() {
-        this.audio = new Audio('song/Thriller (2003 Edit).mp3');
+        this.playlist = [
+            {
+                title: "Wanna Be Startin' Somethin'",
+                file: "Thriller/01. Wanna Be Startin' Somethin'.mp3"
+            },
+            {
+                title: "Baby Be Mine",
+                file: "Thriller/02. Baby Be Mine.mp3"
+            },
+            {
+                title: "The Girl Is Mine",
+                file: "Thriller/03. The Girl Is Mine.mp3"
+            },
+            {
+                title: "Thriller",
+                file: "Thriller/04. Thriller.mp3"
+            },
+            {
+                title: "Beat It",
+                file: "Thriller/05. Beat It.mp3"
+            },
+            {
+                title: "Billie Jean",
+                file: "Thriller/06. Billie Jean.mp3"
+            },
+            {
+                title: "Human Nature",
+                file: "Thriller/07. Human Nature.mp3"
+            },
+            {
+                title: "P.Y.T. (Pretty Young Thing)",
+                file: "Thriller/08. P.Y.T. (Pretty Young Thing).mp3"
+            },
+            {
+                title: "The Lady In My Life",
+                file: "Thriller/09. The Lady In My Life.mp3"
+            }
+        ];
+        
+        this.currentTrackIndex = 0;
+        this.audio = new Audio(this.playlist[this.currentTrackIndex].file);
         this.isPlaying = false;
         this.isShuffled = false;
         this.isRepeated = false;
@@ -14,6 +54,7 @@ class MusicPlayer {
         this.setupEventListeners();
         this.updateTimeDisplay();
         this.initializeAnimations();
+        this.updateTrackTitle();
     }
 
     initializeElements() {
@@ -27,6 +68,7 @@ class MusicPlayer {
         this.progressBar = document.querySelector('.lecture-bar');
         this.currentTimeDisplay = document.querySelector('.lecture-time p:first-child');
         this.totalTimeDisplay = document.querySelector('.lecture-time p:last-child');
+        this.trackTitle = document.querySelector('.cover-title h1');
         
         if (!this.playButton || !this.pauseButton) {
             console.error('Boutons play/pause non trouvés');
@@ -253,15 +295,14 @@ class MusicPlayer {
             const mouseX = e.clientX - centerX;
             const mouseY = e.clientY - centerY;
             
-            const maxTilt = 3; // Réduit pour moins d'interférence
-            const maxMove = 5; // Réduit pour moins d'interférence
+            const maxTilt = 3; 
+            const maxMove = 5; 
             
             const tiltX = (mouseY / (window.innerHeight / 2)) * maxTilt;
             const tiltY = -(mouseX / (window.innerWidth / 2)) * maxTilt;
             const moveX = (mouseX / (window.innerWidth / 2)) * maxMove;
             const moveY = (mouseY / (window.innerHeight / 2)) * maxMove;
             
-            // Appliquer le parallaxe seulement si on ne fait pas glisser le disque
             if (!this.isDragging) {
                 gsap.to(main, {
                     rotationX: tiltX,
@@ -271,14 +312,6 @@ class MusicPlayer {
                     duration: 0.5,
                     ease: "power2.out"
                 });
-                
-                // Ne pas déplacer le disque avec le parallaxe pour éviter les conflits
-                // gsap.to(disque, {
-                //     x: moveX * 0.3,
-                //     y: moveY * 0.3,
-                //     duration: 0.5,
-                //     ease: "power2.out"
-                // });
             }
         });
         
@@ -292,7 +325,6 @@ class MusicPlayer {
                 ease: "power2.out"
             });
             
-            // Réinitialiser la position du disque
             gsap.to(disque, {
                 x: 0,
                 y: 0,
@@ -322,14 +354,15 @@ class MusicPlayer {
 
     setupDisqueControls() {
         const disque = this.disque;
+        const disqueOverlay = document.querySelector('.cover-disque-overlay');
 
-        disque.addEventListener('touchstart', (e) => this.handleTouchStart(e));
-        disque.addEventListener('touchmove', (e) => this.handleTouchMove(e));
-        disque.addEventListener('touchend', (e) => this.handleTouchEnd(e));
-        disque.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+        disqueOverlay.addEventListener('touchstart', (e) => this.handleTouchStart(e));
+        disqueOverlay.addEventListener('touchmove', (e) => this.handleTouchMove(e));
+        disqueOverlay.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+        disqueOverlay.addEventListener('mousedown', (e) => this.handleMouseDown(e));
         document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
         document.addEventListener('mouseup', (e) => this.handleMouseUp(e));
-        disque.addEventListener('contextmenu', (e) => e.preventDefault());
+        disqueOverlay.addEventListener('contextmenu', (e) => e.preventDefault());
     }
 
     setupProgressBarControls() {
@@ -387,7 +420,6 @@ class MusicPlayer {
         
         this.currentRotation = rotation;
         
-        // Utiliser GSAP pour la rotation
         gsap.set(this.disque, {
             rotation: rotation,
             transformOrigin: "center center"
@@ -445,7 +477,6 @@ class MusicPlayer {
         
         this.currentRotation = rotation;
         
-        // Utiliser GSAP pour la rotation
         gsap.set(this.disque, {
             rotation: rotation,
             transformOrigin: "center center"
@@ -547,10 +578,8 @@ class MusicPlayer {
             }
         });
         
-        this.audio.currentTime = 0;
-        if (this.isPlaying) {
-            this.audio.play();
-        }
+        this.currentTrackIndex = this.getNextTrackIndex();
+        this.loadTrack();
     }
 
     previous() {
@@ -567,7 +596,15 @@ class MusicPlayer {
             }
         });
         
-        this.audio.currentTime = 0;
+        this.currentTrackIndex = (this.currentTrackIndex - 1 + this.playlist.length) % this.playlist.length;
+        this.loadTrack();
+    }
+
+    loadTrack() {
+        this.audio.src = this.playlist[this.currentTrackIndex].file;
+        this.audio.load();
+        this.updateTrackTitle();
+        
         if (this.isPlaying) {
             this.audio.play();
         }
@@ -621,6 +658,18 @@ class MusicPlayer {
         });
     }
 
+    getNextTrackIndex() {
+        if (this.isShuffled) {
+            let nextIndex;
+            do {
+                nextIndex = Math.floor(Math.random() * this.playlist.length);
+            } while (nextIndex === this.currentTrackIndex && this.playlist.length > 1);
+            return nextIndex;
+        } else {
+            return (this.currentTrackIndex + 1) % this.playlist.length;
+        }
+    }
+
     startDisqueRotation() {
         this.disque.style.animation = 'none';
         
@@ -636,7 +685,6 @@ class MusicPlayer {
                 const newRotation = (elapsed * rotationSpeed / 1000) % 360;
                 this.currentRotation = newRotation;
                 
-                // Utiliser GSAP pour une rotation plus fluide et éviter les conflits
                 gsap.set(this.disque, {
                     rotation: newRotation,
                     transformOrigin: "center center"
@@ -651,7 +699,6 @@ class MusicPlayer {
             this.rotationInterval = null;
         }
         
-        // Utiliser GSAP pour maintenir la rotation actuelle
         gsap.set(this.disque, {
             rotation: this.currentRotation,
             transformOrigin: "center center"
@@ -697,7 +744,14 @@ class MusicPlayer {
             this.audio.currentTime = 0;
             this.audio.play();
         } else {
-            this.pause();
+            this.currentTrackIndex = this.getNextTrackIndex();
+            this.loadTrack();
+        }
+    }
+
+    updateTrackTitle() {
+        if (this.trackTitle) {
+            this.trackTitle.textContent = this.playlist[this.currentTrackIndex].title;
         }
     }
 }
