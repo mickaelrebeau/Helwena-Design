@@ -1,4 +1,3 @@
-// Burger Menu Functionality
 const burgerMenu = document.getElementById('burger-menu');
 const menu = document.getElementById('menu');
 
@@ -7,7 +6,6 @@ burgerMenu.addEventListener('click', () => {
     menu.classList.toggle('active');
 });
 
-// Close menu when clicking on menu items
 const menuItemsNav = document.querySelectorAll('.menu ul li');
 menuItemsNav.forEach(item => {
     item.addEventListener('click', () => {
@@ -16,7 +14,6 @@ menuItemsNav.forEach(item => {
     });
 });
 
-// Close menu when clicking outside
 document.addEventListener('click', (e) => {
     if (!burgerMenu.contains(e.target) && !menu.contains(e.target)) {
         burgerMenu.classList.remove('active');
@@ -250,10 +247,9 @@ function getDisplacementFilter({
   );
 }
 
-// Paramètres initiaux
 let params = {
   height: 480,
-  width: 200,
+  width: 210,
   depth: 10,
   radius: 20,
   strength: 100,
@@ -304,3 +300,106 @@ glass.addEventListener("mouseup", () => {
 });
 
 updateGlass();
+
+const statsContainer = document.querySelector(".stats-container");
+let isDragging = false;
+let startX, startY, initialX, initialY;
+let currentX = 0;
+let currentY = 0;
+
+const originalPosition = {
+  x: 0,
+  y: 0,
+};
+
+function initPosition() {
+  const rect = statsContainer.getBoundingClientRect();
+  originalPosition.x = rect.left;
+  originalPosition.y = rect.top;
+  currentX = 0;
+  currentY = 0;
+}
+
+statsContainer.addEventListener("mousedown", startDragging);
+document.addEventListener("mousemove", drag);
+document.addEventListener("mouseup", stopDragging);
+
+statsContainer.addEventListener("touchstart", startDraggingTouch);
+document.addEventListener("touchmove", dragTouch);
+document.addEventListener("touchend", stopDragging);
+
+function startDragging(e) {
+  isDragging = true;
+  startX = e.clientX;
+  startY = e.clientY;
+  initialX = currentX;
+  initialY = currentY;
+
+  statsContainer.style.transition = "none";
+  statsContainer.style.cursor = "grabbing";
+  statsContainer.style.userSelect = "none";
+  statsContainer.classList.add("dragging");
+}
+
+function startDraggingTouch(e) {
+  isDragging = true;
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+  initialX = currentX;
+  initialY = currentY;
+
+  statsContainer.style.transition = "none";
+  statsContainer.style.cursor = "grabbing";
+  statsContainer.style.userSelect = "none";
+  statsContainer.classList.add("dragging");
+}
+
+function drag(e) {
+  if (!isDragging) return;
+
+  e.preventDefault();
+
+  const deltaX = e.clientX - startX;
+  const deltaY = e.clientY - startY;
+
+  currentX = initialX + deltaX;
+  currentY = initialY + deltaY;
+
+  statsContainer.style.transform = `translate(${currentX}px, ${currentY}px)`;
+}
+
+function dragTouch(e) {
+  if (!isDragging) return;
+
+  e.preventDefault();
+
+  const deltaX = e.touches[0].clientX - startX;
+  const deltaY = e.touches[0].clientY - startY;
+
+  currentX = initialX + deltaX;
+  currentY = initialY + deltaY;
+
+  statsContainer.style.transform = `translate(${currentX}px, ${currentY}px)`;
+}
+
+function stopDragging() {
+  if (!isDragging) return;
+
+  isDragging = false;
+  statsContainer.style.cursor = "grab";
+  statsContainer.style.userSelect = "auto";
+  statsContainer.classList.remove("dragging");
+
+  statsContainer.style.transition =
+    "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)";
+  statsContainer.style.transform = "translate(0, 0)";
+
+  setTimeout(() => {
+    currentX = 0;
+    currentY = 0;
+    statsContainer.style.transition = "";
+  }, 600);
+}
+
+window.addEventListener("load", initPosition);
+window.addEventListener("resize", initPosition);
